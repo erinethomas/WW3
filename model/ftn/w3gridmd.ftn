@@ -958,7 +958,10 @@
 
       CONTAINS
 
-      SUBROUTINE W3GRID()
+      SUBROUTINE W3GRID(MDS)
+
+      IMPLICIT NONE
+      INTEGER, INTENT(IN) :: MDS(5)
 
 !/O0      FLNMLO = .TRUE.
 !/STAB2      FLSTB2 = .TRUE.
@@ -978,9 +981,9 @@
 ! 2.  IO set-up.
 !
 !/DEBUGGRID      IAPROC = 1
-      NDSI   = 10
-      NDSS   = 99
-      NDSM   = 20
+      NDSI   = MDS(1) 
+      NDSS   = MDS(2) 
+      NDSM   = MDS(3) 
 !
       INQUIRE(FILE=TRIM(FNMPRE)//"ww3_grid.nml", EXIST=FLGNML) 
       IF (FLGNML) THEN
@@ -997,8 +1000,8 @@
               ERR=2000,IOSTAT=IERR)
       END IF
 !
-      NDSTRC =  6
-      NTRACE =  10
+      NDSTRC =  MDS(4)
+      NTRACE =  MDS(5)
       CALL ITRACE ( NDSTRC, NTRACE )
 !
 !/S      CALL STRACE (IENT, 'W3GRID')
