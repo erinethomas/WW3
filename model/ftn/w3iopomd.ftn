@@ -297,9 +297,13 @@
 !
 !/T        WRITE (NDST,9010) IPT, XPT(IPT), YPT(IPT), PNAMES(IPT)
 !
+!/RTD   IF (GTYPE .NE. UNGTYPE) THEN
 !/RTD !!   Need to wrap rotated Elon values greater than X0.  JGLi12Jun2012
 !/RTD          XPT(IPT) = MOD( EquLon(IPT)+360.0, 360.0 )
 !/RTD          IF( XPT(IPT) .LT. X0 )  XPT(IPT) = XPT(IPT) + 360.0
+!/RTD   ELSE
+!/RTD          IF (XPT(IPT) > 180.0)  XPT(IPT) = XPT(IPT) - 360.0
+!/RTD   ENDIF
 !
 !     Check if point within grid and compute interpolation weights
 !
