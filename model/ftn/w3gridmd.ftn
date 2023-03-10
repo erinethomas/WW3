@@ -526,6 +526,8 @@
                           NOSWLL, PTMETH, PTFCUT
       USE W3TIMEMD, ONLY: CALTYPE
       USE W3NMLGRIDMD
+
+      USE shr_wave_mod, only: shr_calc_wave_freq
 !/SCRIP      USE SCRIP_GRIDS, ONLY: GRID1_UNITS, GRID1_NAME, &
 !/SCRIP                             GRID1_CENTER_LON, GRID1_CENTER_LAT, &
 !/SCRIP                             GRID1_CORNER_LON, GRID1_CORNER_LAT, &
@@ -1105,15 +1107,20 @@
 !
 !   b Frequencies :
 !
-      SIGMA   = FR1 * TPI / XFR**2
-      SXFR    = 0.5 * (XFR-1./XFR)
+      !SIGMA   = FR1 * TPI / XFR**2
+      !SXFR    = 0.5 * (XFR-1./XFR)
 !
-      DO IK=0, NK+1
-        SIGMA    = SIGMA * XFR
-        SIG (IK) = SIGMA
-        DSIP(IK) = SIGMA * SXFR
-        END DO
-!
+      !DO IK=0, NK+1
+        !SIGMA    = SIGMA * XFR
+        !SIG (IK) = SIGMA
+        !DSIP(IK) = SIGMA * SXFR
+        !END DO
+      call shr_calc_wave_freq(NK,FR1,XFR,SIG,DSIP) 
+      ! shr_calc_wave_freq removes the two pi for conversion to radians
+      ! must add it back here: 
+      SIG = SIG * TPI
+      DSIP = DSIP * TPI
+
       DSII( 1) = 0.5 * SIG( 1) * (XFR-1.)
       DO IK=2, NK-1
         DSII(IK) = DSIP(IK)
