@@ -528,6 +528,7 @@
       USE W3NMLGRIDMD
 
       USE shr_wave_mod, only: shr_calc_wave_freq
+      use shr_kind_mod, only: R8 => shr_kind_r8
 !/SCRIP      USE SCRIP_GRIDS, ONLY: GRID1_UNITS, GRID1_NAME, &
 !/SCRIP                             GRID1_CENTER_LON, GRID1_CENTER_LAT, &
 !/SCRIP                             GRID1_CORNER_LON, GRID1_CORNER_LAT, &
@@ -604,6 +605,8 @@
                                  XO, YO, RD(4), RDTOT,                &
                                  FACTOR, RTH0, FMICHE, RWNDC,         &
                                  WCOR1, WCOR2
+
+      REAL(8),ALLOCATABLE    :: SIG_TEMP(:),DSIP_TEMP(:)
 !
       CHARACTER(LEN=4)        :: GSTRG, CSTRG
 !
@@ -1115,7 +1118,10 @@
         !SIG (IK) = SIGMA
         !DSIP(IK) = SIGMA * SXFR
         !END DO
-      call shr_calc_wave_freq(NK,FR1,XFR,SIG,DSIP) 
+      call shr_calc_wave_freq(NK,dble(FR1),dble(XFR),SIG_TEMP,DSIP_TEMP)
+      ! convert back to single
+      SIG = real(SIG_TEMP) 
+      DSIP = real(DSIP_TEMP) 
       ! shr_calc_wave_freq removes the two pi for conversion to radians
       ! must add it back here: 
       SIG = SIG * TPI
