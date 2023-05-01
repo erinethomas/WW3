@@ -1110,6 +1110,8 @@
 !
 !   b Frequencies :
 !
+        ! the calcualtion of frequency space is now done 
+        ! in share/util/shr_wave_mod.F90 
       !SIGMA   = FR1 * TPI / XFR**2
       !SXFR    = 0.5 * (XFR-1./XFR)
 !
@@ -1118,11 +1120,12 @@
         !SIG (IK) = SIGMA
         !DSIP(IK) = SIGMA * SXFR
         !END DO
+
       call shr_calc_wave_freq(NK,dble(FR1),dble(XFR),SIG_TEMP,DSIP_TEMP)
       ! convert back to single
       SIG = real(SIG_TEMP) 
       DSIP = real(DSIP_TEMP) 
-      ! shr_calc_wave_freq removes the two pi for conversion to radians
+      ! shr_calc_wave_freq removes the two pi from line 1115 for conversion to radians
       ! must add it back here: 
       SIG = SIG * TPI
       DSIP = DSIP * TPI
