@@ -1120,6 +1120,8 @@
         !SIG (IK) = SIGMA
         !DSIP(IK) = SIGMA * SXFR
         !END DO
+      allocate(SIG_TEMP(NK+2))
+      allocate(DSIP_TEMP(NK+2))
 
       call shr_calc_wave_freq(NK,dble(FR1),dble(XFR),SIG_TEMP,DSIP_TEMP)
       ! convert back to single
