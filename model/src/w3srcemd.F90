@@ -1328,7 +1328,7 @@ CONTAINS
       !
       ! Sea Ice Damping Source Term
       !
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
 #ifdef W3_IC4
       if (ICE.GT.0) CALL W3SIC4 ( SPEC,DEPTH, CG1,              &
                                  IX, IY, VSIC, VDIC ) 
@@ -1393,7 +1393,7 @@ CONTAINS
         VDIN(1:NSPECH) = ICESCALEIN * VDIN(1:NSPECH)
         VSDS(1:NSPECH) = ICESCALEDS * VSDS(1:NSPECH)
         VDDS(1:NSPECH) = ICESCALEDS * VDDS(1:NSPECH)
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
         VSIC(1:NSPECH) = ICE        * VSIC(1:NSPECH)    ! (see Rogers et al 2016)
         VDIC(1:NSPECH) = ICE        * VDIC(1:NSPECH)    ! **************
 #endif
@@ -1436,7 +1436,7 @@ CONTAINS
 #ifdef W3_UOST
         VS(IS) = VS(IS) + VSUO(IS)
 #endif
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
        IF ( ICE.GT.0. ) VS(IS) = VS(IS) + VSIC(IS)
 #endif
         VD(IS) =  VDIN(IS) + VDNL(IS)  &
@@ -1453,7 +1453,7 @@ CONTAINS
 #ifdef W3_UOST
         VD(IS) = VD(IS) + VDUO(IS)
 #endif
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
       IF ( ICE.GT.0. ) VD(IS) = VD(IS) + VDIC(IS)
 #endif
         DAMAX = MIN ( DAM(IS) , MAX ( XREL*SPECINIT(IS) , AFILT ) )
@@ -1474,7 +1474,7 @@ CONTAINS
       !
       DT     = MAX ( 0.5, DT ) ! The hardcoded min. dt is a problem for certain cases e.g. laborotary scale problems.
       !
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
       if (ICE.gt.0.01 .and. ICE.lt.0.95) DT=DTMIN ! always use a small timestep in ice
 #endif
       DTDYN  = DTDYN + DT
@@ -1765,7 +1765,7 @@ CONTAINS
                / MAX ( 1. , (1.-HDT*VDBT(IS))) ! semi-implict integration scheme
           PHINL = PHINL + VSNL(IS)* DT * FACTOR                      &
                / MAX ( 1. , (1.-HDT*VDNL(IS))) ! semi-implict integration scheme
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
           IF ( ICE.GT.0 ) THEN
              PHICE = PHICE + VSIC(IS) * DT * FACTOR                  &
                / MAX ( 1. , (1.-HDT*VDIC(IS))) ! semi-implicit integration
@@ -2041,7 +2041,7 @@ CONTAINS
     TAUBBL(:)=TAUBBL(:)/DTG
     TAUOCX=DAIR*COEF*COEF*USTAR*USTAR*COS(USTDIR) + DWAT*(TAUOX-TAUWIX)
     TAUOCY=DAIR*COEF*COEF*USTAR*USTAR*SIN(USTDIR) + DWAT*(TAUOY-TAUWIY)
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
     TAUICE(:)=TAUICE(:)/DTG  
     TAUOX = TAUOX - TAUICE(1) 
     TAUOY = TAUOY - TAUICE(2) 
@@ -2053,7 +2053,7 @@ CONTAINS
     PHIAW =DWAT*GRAV*PHIAW /DTG
     PHINL =DWAT*GRAV*PHINL /DTG
     PHIBBL=DWAT*GRAV*PHIBBL/DTG
-#ifdef IC4_ACCURATE_NUMERICS
+#ifdef W3_IC4_ACCURATE_NUMERICS
     PHICE =-1.*DWAT*GRAV*PHICE/DTG 
 #endif
     !
@@ -2066,7 +2066,7 @@ CONTAINS
       WRITE(740+IAPROC,*) '3 : sum(SPEC)=', sum(SPEC)
     END IF
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
     IF ( INFLAGS2(4).AND.ICE.GT.0 ) THEN
 
       IF (IICEDISP) THEN
@@ -2085,7 +2085,7 @@ CONTAINS
             WN_R(IK)=WN1(IK)*(1-SMOOTH_ICEDISP)+WN_R(IK)*(SMOOTH_ICEDISP)
           END DO
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
         END IF
       ELSE
         WN_R=WN1
@@ -2109,7 +2109,7 @@ CONTAINS
 #ifdef W3_IC3
       CALL W3SIC3 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
       CALL W3SIC4 ( SPEC,DEPTH, CG1,       IX, IY, VSIC, VDIC )
 #endif
 #ifdef W3_IC5
@@ -2119,7 +2119,7 @@ CONTAINS
 #ifdef W3_IS1
       CALL W3SIS1 ( SPEC, ICE, VSIR )
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
       SPEC2 = SPEC
       !
       TAUICE(:) = 0.
@@ -2140,7 +2140,7 @@ CONTAINS
 #ifdef W3_IC3
         ATT=EXP(ICE*VDIC(IS)*DTG)
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
         ATT=EXP(ICE*VDIC(IS)*DTG)
 #endif
 #ifdef W3_IC5
@@ -2158,7 +2158,7 @@ CONTAINS
           ATT=ATT*EXP((ICE*VDIR(IS))*DTG)
         END IF
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
         SPEC(1+(IK-1)*NTH:NTH+(IK-1)*NTH) = ATT*SPEC2(1+(IK-1)*NTH:NTH+(IK-1)*NTH)
 #endif
         !
@@ -2187,7 +2187,7 @@ CONTAINS
           END IF
         END IF
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
         !
         ! 10.2  Fluxes of energy and momentum due to ice effects
         !
@@ -2210,7 +2210,7 @@ CONTAINS
         ICEF = 0.
       ENDIF
 #endif
-#ifndef IC4_ACCURATE_NUMERICS
+#ifndef W3_IC4_ACCURATE_NUMERICS
     END IF
 #endif    
     !
