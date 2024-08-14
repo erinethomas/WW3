@@ -469,6 +469,9 @@ CONTAINS
     !             viscoelastic sea ice model (Wang and Shen 2010).
     !     !/IC4   Dissipation via interaction with ice as a function of freq.
     !             (empirical/parametric methods)
+    !     !/IC4_ACCURATE_NUMERICS
+    !             Correction for numerics for wave damping in sea ice.
+    !             only tested for use with IC4M10 (Meylan et al 2021)
     !     !/IC5   Dissipation via interaction with ice according to a
     !             viscoelastic sea ice model (Mosig et al. 2015).
     !     !/DB0   No depth-limited breaking.                 ( Choose one )
@@ -1328,8 +1331,8 @@ CONTAINS
       !
       ! Sea Ice Damping Source Term
       !
-#ifdef W3_IC4_ACCURATE_NUMERICS
 #ifdef W3_IC4
+#ifdef W3_IC4_ACCURATE_NUMERICS
       if (ICE.GT.0) CALL W3SIC4 ( SPEC,DEPTH, CG1,              &
                                  IX, IY, VSIC, VDIC ) 
 #endif
@@ -2109,8 +2112,10 @@ CONTAINS
 #ifdef W3_IC3
       CALL W3SIC3 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
 #endif
+#ifdef W3_IC4
 #ifndef W3_IC4_ACCURATE_NUMERICS
       CALL W3SIC4 ( SPEC,DEPTH, CG1,       IX, IY, VSIC, VDIC )
+#endif
 #endif
 #ifdef W3_IC5
       CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
