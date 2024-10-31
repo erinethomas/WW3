@@ -2382,11 +2382,12 @@ CONTAINS
             ! If unstructured mesh
             IF (GTYPE.EQ.UNGTYPE) THEN
 #ifdef W3_RTD
-              ALLOCATE(LONEQ(NX),LATEQ(NX),ANGLED(NX))
+              ALLOCATE(ANGLED(NX),LONEQ(NX),LATEQ(NX))
               LONEQ(:)=XYB(:,1)
               LATEQ(:)=XYB(:,2)
               CALL W3EQTOLL(LATEQ, LONEQ, LAT, LON, &
                       ANGLED, POLAT, POLON, NX)
+              DEALLOCATE(ANGLED,LONEQ,LATEQ)
               DO I = 1,NX
                 IF (LON(I) > 180.0) THEN
                   LON(I) = LON(I) - 360.0
