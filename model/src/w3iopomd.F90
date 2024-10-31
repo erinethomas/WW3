@@ -434,9 +434,13 @@ CONTAINS
 #endif
       !
 #ifdef W3_RTD
+      IF (GTYPE .NE. UNGTYPE) THEN
       !!   Need to wrap rotated Elon values greater than X0.  JGLi12Jun2012
-      XPT(IPT) = MOD( EquLon(IPT)+360.0, 360.0 )
-      IF( XPT(IPT) .LT. X0 )  XPT(IPT) = XPT(IPT) + 360.0
+        XPT(IPT) = MOD( EquLon(IPT)+360.0, 360.0 )
+        IF( XPT(IPT) .LT. X0 )  XPT(IPT) = XPT(IPT) + 360.0
+      ELSE
+        IF (XPT(IPT) > 180.0)  XPT(IPT) = XPT(IPT) - 360.0
+      ENDIF      
 #endif
       !
       !     Check if point within grid and compute interpolation weights
