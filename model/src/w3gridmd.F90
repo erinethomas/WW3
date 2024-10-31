@@ -1170,7 +1170,7 @@ CONTAINS
     !
     CALL W3NMOD ( 1, 6, 6 )
     CALL W3SETG ( 1, 6, 6 )
-    CALL W3NOUT (    6, 6 )
+    CALL W3NOUT (    6, 6, NDSO)
     CALL W3SETO ( 1, 6, 6 )
     !
     !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
