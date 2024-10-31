@@ -700,6 +700,7 @@ MODULE W3GRIDMD
   !
 #endif
   REAL, ALLOCATABLE       :: XGRDIN(:,:), YGRDIN(:,:)
+  REAL, ALLOCATABLE       :: XUGRDIN(:,:), YUGRDIN(:,:)
   REAL, ALLOCATABLE       :: ZBIN(:,:), OBSX(:,:), OBSY(:,:)
   REAL, ALLOCATABLE       :: REFD(:,:), REFD2(:,:), REFS(:,:)
 #ifdef W3_BT4
@@ -3332,6 +3333,9 @@ CONTAINS
 #ifdef W3_PR3
       WRITE (NDSO,2953) CFLTM, WDTHCG, WDTHTH
 #endif
+#ifdef W3_RDT
+       WRITE (NDSO,2954) PLON, PLAT, UNROT
+#endif
       !
       WRITE (NDSO,2956) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,TRIM(UGOBCFILE), &
            EXPFSN, EXPFSPSI, EXPFSFCT, IMPFSN, EXPTOTAL,&
@@ -4167,8 +4171,18 @@ CONTAINS
 
       !       Calculate rotation angles; (StdLon/Lat are returned, but not used)
       !       The regular grid X/YGRDIN are used as equatorial lon and lat
-      CALL W3EQTOLL( YGRDIN, XGRDIN, StdLat, StdLon, AnglDin, &
-           PoLat, PoLon, NX*NY )
+      IF (GTYPE.NE.UNGTYPE) THEN
+        CALL W3EQTOLL( YGRDIN, XGRDIN, StdLat, StdLon, AnglDin, &
+             PoLat, PoLon, NX*NY )
+      ELSE
+        ALLOCATE(XUGRDIN(NX*NY),YUGRDIN(NX*NY))
+        DO IX = 1,NX*NY
+           XUGRDIN(IX) = XYB(IX,1)
+           YUGRDIN(IX) = XYB(IX,2)
+        ENDDO
+        CALL W3EQTOLL(YUGRDIN, XUGRDIN, StdLat, StdLon, AnglDin, &
+             PoLat, PoLon, NX*NY )
+      ENDIF
 
       !       Clean up
       DEALLOCATE( StdLat, StdLon )
@@ -6619,6 +6633,10 @@ CONTAINS
          '    shadow calibration factor: ',F5.2)
 4502 FORMAT ('  &UOST UOSTFILELOCAL = ',A,', UOSTFILESHADOW = ',A,/ &
          '        UOSTFACTORLOCAL = ',F5.2', UOSTFACTORSHADOW = ',F5.2,' /')
+#endif
+    !
+#ifdef W3_RTD
+2954 FORMAT ('  &RTD PLON = ',F9.3,', PLAT = ',F9.3,', UNROT = ',L3,' /')
 #endif
     !
 950 FORMAT (/'  Propagation scheme : '/                             &
