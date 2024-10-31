@@ -1153,7 +1153,10 @@ MODULE W3GRIDMD
 
 CONTAINS
 
-  SUBROUTINE W3GRID()
+  SUBROUTINE W3GRID(MDS)
+
+  IMPLICIT NONE
+  INTEGER, INTENT(IN) :: MDS(5)
 
 #ifdef W3_O0
     FLNMLO = .TRUE.
@@ -1173,9 +1176,9 @@ CONTAINS
     !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ! 2.  IO set-up.
     !
-    NDSI   = 10
-    NDSS   = 99
-    NDSM   = 20
+    NDSI   = MDS(1)
+    NDSS   = MDS(2) 
+    NDSM   = MDS(3) 
     !
     INQUIRE(FILE=TRIM(FNMPRE)//"ww3_grid.nml", EXIST=FLGNML)
     IF (FLGNML) THEN
@@ -1192,8 +1195,8 @@ CONTAINS
            ERR=2000,IOSTAT=IERR)
     END IF
     !
-    NDSTRC =  6
-    NTRACE =  10
+    NDSTRC =  MDS(4)
+    NTRACE =  MDS(5)
     CALL ITRACE ( NDSTRC, NTRACE )
     !
 #ifdef W3_S
