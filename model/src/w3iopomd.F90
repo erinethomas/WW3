@@ -778,7 +778,7 @@ CONTAINS
     !/ ------------------------------------------------------------------- /
     USE CONSTANTS
     USE W3GDATMD, ONLY: NK, NTH, SIG, NX, NY, NSEA, NSEAL,          &
-         MAPSTA, MAPFS
+         MAPSTA, MAPFS, GTYPE, UNGTYPE
 #ifdef W3_RTD
     !!   Use spectral rotation sub and angle.  JGLi12Jun2012
     USE W3GDATMD, ONLY: NSPEC, AnglD, FLAGUNR
@@ -844,6 +844,7 @@ CONTAINS
     REAL                    :: TAUX, TAUY
 #endif
     INTEGER                 :: JSEA, ISEA
+    INTEGER                 :: NND
 #ifdef W3_T
     REAL                    :: SPTEST(NK,NTH)
 #endif
@@ -888,7 +889,13 @@ CONTAINS
       RDS    = 0.
       RDI    = 0.
       !
-      DO J=1, 4
+      IF (GTYPE .NE. UNGTYPE) THEN
+        NND = 4
+      ELSE
+        NND = 3
+      ENDIF
+
+      DO J=1, NND
         IS(J)  = MAPFS (IY(J),IX(J))
         IM(J)  = MAPSTA(IY(J),IX(J))
         IF ( IM(J).GT.0 ) THEN
