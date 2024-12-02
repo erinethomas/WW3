@@ -222,8 +222,11 @@
           AMAX   = MAX ( AMAX , A(ITH,IK) )
           END DO
         END DO
-
-        DLWMEAN=ATAN2(ELSN,ELCS);
+        IF (ELSN.eq.0.) THEN
+          DLWMEAN=ATAN2(1.0e-15,ELCS);
+        ELSE
+          DLWMEAN=ATAN2(ELSN,ELCS);
+        ENDIF
 !
 ! 2.  Integrate over directions -------------------------------------- *
 !
@@ -1760,8 +1763,12 @@
           MSSSUM  (IK:NK,5) = MSSSUM (IK:NK,5) +MSSPCS
 !
 ! Direction of long wave mss summed up to IK       
-!
-          MSSD=0.5*(ATAN2(2*MSSSUM(IK,5),MSSSUM(IK,3)-MSSSUM(IK,4)))
+!  
+         IF (MSSSUM(IK,5).eq.0.) THEN
+            MSSD=0.5*(ATAN2(1.0e-15,MSSSUM(IK,3)-MSSSUM(IK,4)))
+          ELSE
+            MSSD=0.5*(ATAN2(2*MSSSUM(IK,5),MSSSUM(IK,3)-MSSSUM(IK,4)))
+          ENDIF
           IF (MSSD.LT.0) MSSD = MSSD + PI
             IMSSMAX (IK)=1+NINT(MSSD *NTH/TPI)
 !

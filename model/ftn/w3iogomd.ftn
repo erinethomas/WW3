@@ -1491,8 +1491,11 @@
 !
 ! Old definitions:  MSCX(JSEA)  = ABX2(JSEA) * FACTOR * FACTOR2
 !                   MSCY(JSEA)  = ABY2(JSEA) * FACTOR * FACTOR2
-            MSCD(JSEA)=0.5*ATAN2(2*MB,MA-MC)
-
+            if (MB .eq. 0.) then
+              MSCD(JSEA)=0.5*ATAN2(1.0e-15,MA-MC)
+            else
+              MSCD(JSEA)=0.5*ATAN2(2*MB,MA-MC)
+            endif
             MSCX(JSEA)= MA*COS(MSCD(JSEA))**2   &
                        +2*MB*SIN(MSCD(JSEA))*COS(MSCD(JSEA))+MA*SIN(MSCD(JSEA))**2
             MSCY(JSEA)= MC*COS(MSCD(JSEA))**2   &
@@ -1802,7 +1805,11 @@
 !     From matlab script: t0=0.5*(atan2(2.*B,A-C));
 !     From matlab script: A2=A.*cos(t0).^2+2.*B.*sin(t0).*cos(t0)+A.*cos(t0).^2+C.*sin(t0)^2;
 !     From matlab script: C2=C.*cos(t0)^2-2.*B.*sin(t0).*cos(t0)+A.*sin(t0).^2;
-         MSSD(JSEA)=0.5*(ATAN2(2*ETXY(JSEA),ETXX(JSEA)-ETYY(JSEA)))
+         if (ETXY(JSEA) .eq. 0.) then
+           MSSD(JSEA)=0.5*(ATAN2(1.0e-15,ETXX(JSEA)-ETYY(JSEA)))
+         else
+           MSSD(JSEA)=0.5*(ATAN2(2*ETXY(JSEA),ETXX(JSEA)-ETYY(JSEA)))
+         endif
          MSSX(JSEA)  = ETXX(JSEA)*COS(MSSD(JSEA))**2   &
                        +2*ETXY(JSEA)*SIN(MSSD(JSEA))*COS(MSSD(JSEA))+ETYY(JSEA)*SIN(MSSD(JSEA))**2
          MSSY(JSEA)  = ETYY(JSEA)*COS(MSSD(JSEA))**2   &
