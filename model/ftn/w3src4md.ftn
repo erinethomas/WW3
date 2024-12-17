@@ -206,7 +206,7 @@
       AMAX   = 0.
       DLWMEAN =0.
       ELCS =0.
-      ELSN =0.
+      ELSN =1.0e-15
 !
 ! 1.  Integral over directions and maximum --------------------------- *
 !
@@ -222,7 +222,7 @@
           AMAX   = MAX ( AMAX , A(ITH,IK) )
           END DO
         END DO
-        DLWMEAN=ATAN2(ELSN+1.0e-15,ELCS);
+        DLWMEAN=ATAN2(ELSN,ELCS);
 !
 ! 2.  Integrate over directions -------------------------------------- *
 !
@@ -1732,7 +1732,7 @@
           MSSP   = 0.
           MSSPC2 = 0.
           MSSPS2 = 0.
-          MSSPCS = 0.
+          MSSPCS = 1.0e-15
 !
 ! Sums the contributions to the directional MSS for all ITH   
 !
@@ -1760,7 +1760,7 @@
 !
 ! Direction of long wave mss summed up to IK       
 !  
-          MSSD=0.5*(ATAN2((2*MSSSUM(IK,5))+1.0e-15,MSSSUM(IK,3)-MSSSUM(IK,4)))
+          MSSD=0.5*(ATAN2(2*MSSSUM(IK,5),MSSSUM(IK,3)-MSSSUM(IK,4)))
           IF (MSSD.LT.0) MSSD = MSSD + PI
             IMSSMAX (IK)=1+NINT(MSSD *NTH/TPI)
 !
