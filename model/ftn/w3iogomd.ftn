@@ -1496,6 +1496,7 @@
 ! Old definitions:  MSCX(JSEA)  = ABX2(JSEA) * FACTOR * FACTOR2
 !                   MSCY(JSEA)  = ABY2(JSEA) * FACTOR * FACTOR2
             MSCD(JSEA)=0.5*ATAN2(2*MB,MA-MC)
+
             MSCX(JSEA)= MA*COS(MSCD(JSEA))**2   &
                        +2*MB*SIN(MSCD(JSEA))*COS(MSCD(JSEA))+MA*SIN(MSCD(JSEA))**2
             MSCY(JSEA)= MC*COS(MSCD(JSEA))**2   &
