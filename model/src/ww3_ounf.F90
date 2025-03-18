@@ -2369,8 +2369,8 @@
               IF (GTYPE.EQ.UNGTYPE) THEN 
 #ifdef W3_RTD
                 ALLOCATE(ANGLED(NX),LONEQ(NX),LATEQ(NX))
-                LONEQ(:)=XYB(:,1) 
-                LATEQ(:)=XYB(:,2)
+                LONEQ(:)=XGRD(1,:)
+                LATEQ(:)=YGRD(1,:)
                 CALL W3EQTOLL(LATEQ, LONEQ, LAT, LON, &
                               ANGLED, POLAT, POLON, NX)                
 
