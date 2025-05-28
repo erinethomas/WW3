@@ -61,7 +61,8 @@
                           REFLEC, REFLED, DELX, DELY, DELA, TRNX,     &
                           TRNY, BERG, FPI, DTDYN, FCUT, DTG, TAUWX,   &
                           TAUWY, TAUOX, TAUOY, TAUWIX, TAUWIY, TAUWNX,&
-                          TAUWNY, PHIAW, CHARN, TWS, PHIOC, WHITECAP, &
+                          TAUWNY, PHIAW, CHARN, Z0, USTAR2,           &
+                          TWS, PHIOC, WHITECAP, &
                           D50, PSIC, BEDFORM , PHIBBL, TAUBBL, TAUICE,&
                           PHICE, TAUOCX, TAUOCY, WNMEAN, DAIR, COEF)
 !/
@@ -224,6 +225,9 @@
 !       TAUOCX-YReal   O   Total ocean momentum components
 !       WNMEAN  Real   O   Mean wave number
 !       DAIR    Real   I   Air density
+!       CHARN   Real  I/O  Charnock parameter 
+!       Z0      Real  I/O  Sfc Roughness Length
+!       USTAR2  Real  I/O  Friction Vel for E3SM Coupling
 !     ----------------------------------------------------------------
 !       Note: several pars are set to I/O to avoid compiler warnings.
 !
@@ -530,7 +534,8 @@
                                  SPEC(NSPEC), ALPHA(NK), USTAR,       &
                                  USTDIR, FPI, TAUOX, TAUOY,           &
                                  TAUWX, TAUWY, PHIAW, PHIOC, PHICE,   &
-                                 CHARN, TWS, BEDFORM(3), PHIBBL,      &
+                                 CHARN, Z0, USTAR2,                   &
+                                 TWS, BEDFORM(3), PHIBBL,             &
                                  TAUBBL(2), TAUICE(2), WHITECAP(4),   &
                                  TAUWIX, TAUWIY, TAUWNX, TAUWNY,      &
                                  ICEF, TAUOCX, TAUOCY, WNMEAN
@@ -559,7 +564,7 @@
                                  HDT, ZWND, FP, DEPTH, TAUSCX, TAUSCY, FHIGI
 ! Scaling factor for SIN, SDS, SNL
       REAL                    :: ICESCALELN, ICESCALEIN, ICESCALENL, ICESCALEDS
-      REAL                    :: EMEAN, FMEAN, AMAX, CD, Z0, SCAT,    &
+      REAL                    :: EMEAN, FMEAN, AMAX, CD, SCAT,    &
                                  SMOOTH_ICEDISP
       REAL                    :: WN_R(NK), CG_ICE(NK),ALPHA_LIU(NK), ICECOEF2,&
                                  R(NK)
@@ -843,6 +848,8 @@
       NSTEPS = 0
       PHIAW  = 0.
       CHARN  = 0.
+      Z0     = 0.
+      USTAR2 = 0.
       TWS    = 0.
       PHINL  = 0.
       PHIBBL = 0.
@@ -937,7 +944,8 @@
                   TAUA, TAUADIR, DAIR,                             &
 #endif
                    USTAR, USTDIR,                                  &
-                   TAUWX, TAUWY, CD, Z0, CHARN, LLWS, FMEANWS, DLWMEAN)
+                   TAUWX, TAUWY, CD, Z0, CHARN, USTAR2,            &
+                   LLWS, FMEANWS, DLWMEAN)
 #endif
 
 #ifdef W3_DEBUGSRC
@@ -980,7 +988,8 @@
                    TAUA, TAUADIR, DAIR,                    &
 #endif
                    USTAR, USTDIR,                                &
-                   TAUWX, TAUWY, CD, Z0, CHARN, LLWS, FMEANWS, DLWMEAN)
+                   TAUWX, TAUWY, CD, Z0, CHARN, USTAR2,          &
+                   LLWS, FMEANWS, DLWMEAN)
       TWS = 1./FMEANWS
 #endif
 #ifdef W3_ST6
@@ -1636,7 +1645,8 @@
                    TAUA, TAUADIR, DAIR,                     &
 #endif
                    USTAR, USTDIR,                                 &
-                   TAUWX, TAUWY, CD, Z0, CHARN, LLWS, FMEANWS, DLWMEAN)
+                   TAUWX, TAUWY, CD, Z0, CHARN, USTAR2,           &
+                   LLWS, FMEANWS, DLWMEAN)
 #endif
 #ifdef W3_ST6
         CALL W3SPR6 (SPEC, CG1, WN1, EMEAN, FMEAN, WNMEAN, AMAX, FP)

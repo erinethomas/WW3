@@ -88,7 +88,8 @@
                     TAUA, TAUADIR, DAIR,                              &
 #endif
                     USTAR, USDIR,                                     &
-                    TAUWX, TAUWY, CD, Z0, CHARN, LLWS, FMEANWS, DLWMEAN)
+                    TAUWX, TAUWY, CD, Z0, CHARN, USTAR2,              &
+                    LLWS, FMEANWS, DLWMEAN)
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III                SHOM |
@@ -136,6 +137,7 @@
 !       CD      Real  O   Drag coefficient at wind level ZWND.
 !       Z0      Real  O   Corresponding z0.
 !       CHARN   Real  O   Corresponding Charnock coefficient
+!       USTAR2  Real I/O  Friction velocity for E3SM coupling
 !       LLWS    L.A.  I   Wind sea true/false array for each component            
 !       FMEANWS Real  O   Mean frequency of wind sea, used for tail 
 !       DLWMEAN Real  O   Mean Long wave direction  (L. Romero 2019)
@@ -196,9 +198,10 @@
 #endif
       REAL, INTENT(IN)        :: TAUWX, TAUWY
       LOGICAL, INTENT(IN)     :: LLWS(NSPEC)
-      REAL, INTENT(INOUT)     :: USTAR ,USDIR
+      REAL, INTENT(INOUT)     :: USTAR, USDIR
       REAL, INTENT(OUT)       :: EMEAN, FMEAN, FMEAN1, WNMEAN, AMAX,  & 
-                                 CD, Z0, CHARN, FMEANWS, DLWMEAN
+                                 CD, Z0, CHARN, FMEANWS, DLWMEAN,     &
+                                 USTAR2
 !/
 !/ ------------------------------------------------------------------- /
 !/ Local parameters
@@ -306,6 +309,7 @@
       CALL CALC_USTAR(U,TAUW,USTAR,Z0,CHARN) 
       UNZ    = MAX ( 0.01 , U )
       CD     = (USTAR/UNZ)**2
+      USTAR2 = USTAR
       USDIR = UDIR
 #endif
 !

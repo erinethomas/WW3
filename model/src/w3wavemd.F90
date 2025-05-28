@@ -1889,6 +1889,7 @@
                    TAUOX(JSEA), TAUOY(JSEA), TAUWIX(JSEA),        &
                    TAUWIY(JSEA), TAUWNX(JSEA),                    &
                    TAUWNY(JSEA),  PHIAW(JSEA), CHARN(JSEA),       &
+                   Z0(JSEA), USTAR2(JSEA),                        &
                    TWS(JSEA), PHIOC(JSEA), TMP1, D50, PSIC, TMP2, &
                    PHIBBL(JSEA), TMP3, TMP4, PHICE(JSEA),         &
                    TAUOCX(JSEA), TAUOCY(JSEA), WNMEAN(JSEA),      &
@@ -2733,6 +2734,7 @@
                       TAUOX(JSEA), TAUOY(JSEA), TAUWIX(JSEA),     &
                       TAUWIY(JSEA), TAUWNX(JSEA),                 &
                       TAUWNY(JSEA),  PHIAW(JSEA), CHARN(JSEA),    &
+                      Z0(JSEA), USTAR2(JSEA),                     &
                       TWS(JSEA),PHIOC(JSEA), TMP1, D50, PSIC, TMP2,&
                       PHIBBL(JSEA), TMP3, TMP4, PHICE(JSEA),      &
                       TAUOCX(JSEA), TAUOCY(JSEA), WNMEAN(JSEA),   &
@@ -2759,6 +2761,7 @@
                             TAUOX(JSEA), TAUOY(JSEA), TAUWIX(JSEA),     &
                             TAUWIY(JSEA), TAUWNX(JSEA),                 &
                             TAUWNY(JSEA),  PHIAW(JSEA), CHARN(JSEA),    &
+                            Z0(JSEA), USTAR2(JSEA),                     &
                             TWS(JSEA), PHIOC(JSEA), TMP1, D50, PSIC,TMP2,&
                             PHIBBL(JSEA), TMP3, TMP4 , PHICE(JSEA),     &
                             TAUOCX(JSEA), TAUOCY(JSEA), WNMEAN(JSEA),   &
