@@ -808,6 +808,7 @@
 !
       REAL(8)                 :: GSHIFT ! see notes in WMGHGH
       LOGICAL                 :: FLC, ICEDISP, TRCKCMPR
+      LOGICAL                 :: ICNUMERICS
       INTEGER                 :: PTM   ! Partitioning method
       REAL                    :: PTFC  ! Part. cut off freq (for method 5)
       REAL                    :: AIRCMIN, AIRGB
@@ -1101,7 +1102,7 @@
                       STDX, STDY, STDT, ICEHMIN, ICEHINIT, ICEDISP,   &
                       ICESLN, ICEWIND, ICESNL, ICESDS, ICEHFAC,       &
                       ICEHDISP, ICEDDISP, ICEFDISP, CALTYPE,          &
-                      TRCKCMPR, PTM, PTFC, BTBET
+                      TRCKCMPR, PTM, PTFC, BTBET, ICNUMERICS
            NAMELIST /OUTS/ P2SF, I1P2SF, I2P2SF,                      &
                              US3D, I1US3D, I2US3D,                    &
                              USSP, IUSSP, STK_WN,                     &
@@ -2744,6 +2745,7 @@
       STDY = -1. 
       STDT = -1. 
       ICEDISP = .FALSE.
+      ICNUMERICS=.FALSE.
       CALTYPE = 'standard'
 ! Variables for 3D array output
       E3D=0 
@@ -3017,6 +3019,7 @@
       IICEHDISP  = ICEHDISP
       IICEDDISP  = ICEDDISP
       IICEFDISP  = ICEFDISP
+      IC_NUMERICS=ICNUMERICS
       PMOVE  = MAX ( 0. , PMOVE )
       PFMOVE = PMOVE
 !
@@ -3404,7 +3407,7 @@
                                 ICEHINIT, ICEDISP, ICEHDISP,          &
                                 ICESLN, ICEWIND, ICESNL, ICESDS,      &
                                 ICEDDISP,ICEFDISP, CALTYPE, TRCKCMPR, &
-                                BTBETA
+                                BTBETA,ICNUMERICS
         ELSE
           WRITE (NDSO,2966) CICE0, CICEN, LICE, PMOVE, XSEED, FLAGTR, &
                                 XP, XR, XFILT, IHMAX, HSPMIN, WSMULT, &
@@ -3414,7 +3417,7 @@
                                 ICEHINIT, ICEDISP, ICEHDISP,          &
                                 ICESLN, ICEWIND, ICESNL, ICESDS,      &
                                 ICEDDISP, ICEFDISP, CALTYPE, TRCKCMPR,&
-                                BTBETA
+                                BTBETA,ICNUMERICS
           END IF
 !
 #ifdef W3_FLD1

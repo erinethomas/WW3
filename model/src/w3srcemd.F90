@@ -366,6 +366,7 @@
                           XFC, XFLT, XREL, XFT, FXFM, FXPM, DDEN,     &
                           FTE, FTF, FHMAX, ECOS, ESIN, IICEDISP,      &
                           ICESCALES, IICESMOOTH
+      USE W3GDATMD, ONLY: IC_NUMERICS
       USE W3GDATMD, ONLY: FSSOURCE, optionCall
       USE W3GDATMD, ONLY: B_JGS_NLEVEL, B_JGS_SOURCE_NONLINEAR
 #ifdef W3_REF1
@@ -1227,6 +1228,32 @@
         CALL UOST_SRCTRMCOMPUTE(IX, IY, SPEC, CG1, DT,            &
                                        U10ABS, U10DIR, VSUO, VDUO)
 #endif
+! Sea Ice Source Terms if IC_NUMERICS namelist flag = True
+      IF (IC_NUMERICS) THEN
+#ifdef W3_IC1
+        IF (ICE .GT. 0) CALL W3SIC1 ( SPEC,DEPTH, CG1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IS2
+        IF (ICE .GT. 0) CALL W3SIS2 ( SPEC, DEPTH, ICE, ICEH, ICEF, ICEDMAX, IX, IY, &
+           VSIR, VDIR, VDIR2, WN1, CG1, WN_R, CG_ICE, R )
+#endif
+#ifdef W3_IC2
+        IF (ICE .GT. 0) CALL W3SIC2 ( SPEC, DEPTH, ICEH, ICEF, CG1, WN1,&
+           IX, IY, VSIC, VDIC, WN_R, CG_ICE, ALPHA_LIU, R)
+#endif
+#ifdef W3_IC3
+        IF (ICE .GT. 0) CALL W3SIC3 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IC4
+        IF (ICE .GT. 0) CALL W3SIC4 ( SPEC,DEPTH, CG1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IC5
+        IF (ICE .GT. 0) CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IS1
+        IF (ICE .GT. 0) CALL W3SIS1 ( SPEC, ICE, VSIR )
+#endif
+      ENDIF
 !
 ! 2.g Dump training data if necessary
 !
@@ -1288,6 +1315,12 @@
           VDIN(1:NSPECH) = ICESCALEIN * VDIN(1:NSPECH)
           VSDS(1:NSPECH) = ICESCALEDS * VSDS(1:NSPECH)
           VDDS(1:NSPECH) = ICESCALEDS * VDDS(1:NSPECH)
+          IF(IC_NUMERICS) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+            VSIC(1:NSPECH) = ICE * VSIC(1:NSPECH) ! (see Rogers et al 2016)
+            VDIC(1:NSPECH) = ICE * VDIC(1:NSPECH)
+#endif
+          ENDIF
         END IF
 !
         VS = 0
@@ -1307,6 +1340,11 @@
 #ifdef W3_UOST
          VS(IS) = VS(IS) + VSUO(IS)
 #endif
+         IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+            VS(IS) = VS(IS) + VSIC(IS)
+#endif
+         ENDIF
           VD(IS) =  VDIN(IS) + VDNL(IS)  &
                  + VDDS(IS) + VDBT(IS)
 #ifdef W3_ST6
@@ -1321,6 +1359,11 @@
 #ifdef W3_UOST
          VD(IS) = VD(IS) + VDUO(IS)
 #endif
+          IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+            VD(IS) = VD(IS) + VDIC(IS)
+#endif
+          ENDIF
           DAMAX  = MIN ( DAM(IS) , MAX ( XREL*SPECINIT(IS) , AFILT ) )
           AFAC   = 1. / MAX( 1.E-10 , ABS(VS(IS)/DAMAX) )
 #ifdef W3_NL5
@@ -1603,6 +1646,14 @@
              / MAX ( 1. , (1.-HDT*VDBT(IS))) ! semi-implict integration scheme
            PHINL = PHINL + VSNL(IS)* DT * FACTOR                      &
              / MAX ( 1. , (1.-HDT*VDNL(IS))) ! semi-implict integration scheme
+           IF ( IC_NUMERICS .AND. ICE.GT.0 ) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+             PHICE = PHICE + VSIC(IS) * DT * FACTOR             &
+                    / MAX ( 1. , (1.-HDT*VDIC(IS))) ! semi-implicit integration
+             TAUICE(:) = TAUICE(:) - FACTOR2*COSI(:)*VSIC(IS) * DT &
+                    / MAX ( 1. , (1.-HDT*VDIC(IS)))
+#endif
+           ENDIF
            IF (VSIN(IS).GT.0.) WHITECAP(3) = WHITECAP(3) + SPEC(IS)  * FACTOR
            HSTOT = HSTOT + SPEC(IS) * FACTOR
          END DO
@@ -1867,6 +1918,13 @@
 !
       TAUOX=(GRAV*MWXFINISH+TAUWIX-TAUBBL(1))/DTG
       TAUOY=(GRAV*MWYFINISH+TAUWIY-TAUBBL(2))/DTG
+      IF (IC_NUMERICS) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+        TAUICE(:)=TAUICE(:)/DTG
+        TAUOX = TAUOX - TAUICE(1)
+        TAUOY = TAUOY - TAUICE(2)
+#endif
+      ENDIF
       TAUWIX=TAUWIX/DTG
       TAUWIY=TAUWIY/DTG
       TAUWNX=TAUWNX/DTG
@@ -1881,6 +1939,11 @@
       PHIAW =DWAT*GRAV*PHIAW /DTG
       PHINL =DWAT*GRAV*PHINL /DTG
       PHIBBL=DWAT*GRAV*PHIBBL/DTG
+      IF (IC_NUMERICS) THEN
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+        PHICE =-1.*DWAT*GRAV*PHICE/DTG
+#endif
+    ENDIF
 !
 ! 10.1  Adds ice scattering and dissipation: implicit integration---------------- *
 !     INFLAGS2(4) is true if ice concentration was ever read during
@@ -1893,7 +1956,7 @@
 #endif
 
       IF ( INFLAGS2(4).AND.ICE.GT.0 ) THEN
-
+       IF (.NOT. IC_NUMERICS ) THEN
          IF (IICEDISP) THEN
            ICECOEF2 = 1E-6
            CALL LIU_FORWARD_DISPERSION (ICEH,ICECOEF2,DEPTH, &
@@ -2021,6 +2084,7 @@
              END DO
            PHICE =-1.*DWAT*GRAV*PHICE /DTG
            TAUICE(:)=TAUICE(:)/DTG
+           ENDIF ! end if IC_NUMERICS
            ELSE
 #ifdef W3_IS2
              IF (IS2PARS(10).LT.0.5) THEN
