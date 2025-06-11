@@ -515,7 +515,7 @@
            END DO
            WN_I= 0.5 * ALPHA
         
-        CASE (10)
+        CASE (8)
            ! Cubic fit to Meylan, Horvat & Bitz 2021
            ! ICECOEF1 is thickness
            ! ICECOEF5 is floe size
