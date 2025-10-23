@@ -846,7 +846,7 @@
 !
 ! 5) Atmosphere-waves layer
 !
-      NOGE(5) = 11
+      NOGE(5) = 13
 !
       IDOUT( 5, 1)  = 'Friction velocity   '
       IDOUT( 5, 2)  = 'Charnock parameter  '
@@ -860,6 +860,8 @@
       IDOUT( 5,10)  = 'Dominant break prob '
       IDOUT( 5,11)  = 'Wind sea period' ! C.Bunney - reinstated this as is used in ww3_ounf
                                         ! Is it suposed to be defunct? It is not in ww3_outf...
+      IDOUT( 5, 12)  = 'Sfc Rough. Length  '
+      IDOUT( 5, 13)  = 'Friction Velocity  '
 !
 ! 6) Wave-ocean layer
 !

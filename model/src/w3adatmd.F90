@@ -131,6 +131,8 @@
 !      WNMEAN    R.A.  Public   Mean wave number
 !
 !      CHARN     R.A.  Public   Charnock parameter for air-sea friction.
+!      Z0        R.A.  Public   Sfc Roughness Length for E3SM Coupling
+!      USTAR2    R.A.  Public   Friction Velocity for E3SM coupling
 !      TWS       R.A.  Public   Wind sea period (used for flux parameterizations)
 !      CGE       R.A.  Public   Energy flux.
 !      PHIAW     R.A.  Public   Wind to wave energy flux.
@@ -417,10 +419,12 @@
 !
 ! Output fields group 5)
 !
-        REAL, POINTER         ::  CHARN(:),  CGE(:),  PHIAW(:),       &
+        REAL, POINTER         ::  CHARN(:), Z0(:), USTAR2(:),         &
+                                  CGE(:),  PHIAW(:),                  &
                                   TAUWIX(:),  TAUWIY(:),  TAUWNX(:),  &
                                   TAUWNY(:),  WHITECAP(:,:), TWS(:)
-        REAL, POINTER         :: XCHARN(:), XCGE(:), XPHIAW(:),       &
+        REAL, POINTER         :: XCHARN(:), XZ0(:) , XUSTAR2(:),      &
+                                 XCGE(:), XPHIAW(:),                  &
                                  XTAUWIX(:), XTAUWIY(:), XTAUWNX(:),  &
                                  XTAUWNY(:), XWHITECAP(:,:), XTWS(:)
 !
@@ -576,7 +580,8 @@
                                  PTHP0(:,:), PQP(:,:), PPE(:,:),      &
                                  PTM1(:,:), PT1(:,:), PT2(:,:),PEP(:,:)
 !
-      REAL, POINTER           :: CHARN(:), CGE(:), PHIAW(:),          &
+      REAL, POINTER           :: CHARN(:), Z0(:), USTAR2(:),          &
+                                 CGE(:), PHIAW(:),                    &
                                  TAUWIX(:), TAUWIY(:), TAUWNX(:),     &
                                  TAUWNY(:), WHITECAP(:,:), TWS(:)
 !
@@ -1155,6 +1160,8 @@
 !    Friction velocity UST and USTDIR in W3WDATMD
 !
       ALLOCATE ( WADATS(IMOD)%CHARN   (NSEALM),                       &
+                 WADATS(IMOD)%Z0      (NSEALM),                       &
+                 WADATS(IMOD)%USTAR2  (NSEALM),                       &
                  WADATS(IMOD)%TWS     (NSEALM),                       &
                  WADATS(IMOD)%CGE     (NSEALM),                       &
                  WADATS(IMOD)%PHIAW   (NSEALM),                       &
@@ -1167,6 +1174,8 @@
       CHECK_ALLOC_STATUS ( ISTAT )
 !
       WADATS(IMOD)%CHARN    = UNDEF
+      WADATS(IMOD)%Z0       = UNDEF
+      WADATS(IMOD)%USTAR2   = UNDEF
       WADATS(IMOD)%TWS      = UNDEF
       WADATS(IMOD)%CGE      = UNDEF
       WADATS(IMOD)%PHIAW    = UNDEF
@@ -2058,8 +2067,26 @@
           ALLOCATE ( WADATS(IMOD)%XTWS(1), STAT=ISTAT )
           CHECK_ALLOC_STATUS ( ISTAT )
         END IF
+
+      IF ( OUTFLAGS( 5, 12) ) THEN
+          ALLOCATE ( WADATS(IMOD)%XZ0(NXXX), STAT=ISTAT )
+          CHECK_ALLOC_STATUS ( ISTAT )
+        ELSE
+          ALLOCATE ( WADATS(IMOD)%XZ0(1), STAT=ISTAT )
+          CHECK_ALLOC_STATUS ( ISTAT )
+        END IF
+
+      IF ( OUTFLAGS( 5, 13) ) THEN
+          ALLOCATE ( WADATS(IMOD)%XUSTAR2(NXXX), STAT=ISTAT )
+          CHECK_ALLOC_STATUS ( ISTAT )
+        ELSE
+          ALLOCATE ( WADATS(IMOD)%XUSTAR2(1), STAT=ISTAT )
+          CHECK_ALLOC_STATUS ( ISTAT )
+        END IF
 !
       WADATS(IMOD)%XCHARN    = UNDEF
+      WADATS(IMOD)%XZ0       = UNDEF
+      WADATS(IMOD)%XUSTAR2   = UNDEF
       WADATS(IMOD)%XTWS      = UNDEF
       WADATS(IMOD)%XCGE      = UNDEF
       WADATS(IMOD)%XPHIAW    = UNDEF
@@ -2890,6 +2917,8 @@
           PEP    => WADATS(IMOD)%PEP
 !
           CHARN    => WADATS(IMOD)%CHARN
+          Z0       => WADATS(IMOD)%Z0
+          USTAR2   => WADATS(IMOD)%USTAR2
           TWS      => WADATS(IMOD)%TWS
           CGE      => WADATS(IMOD)%CGE
           PHIAW    => WADATS(IMOD)%PHIAW
@@ -3228,6 +3257,8 @@
           PEP    => WADATS(IMOD)%XPEP
 !
           CHARN    => WADATS(IMOD)%XCHARN
+          Z0       => WADATS(IMOD)%XZ0
+          USTAR2   => WADATS(IMOD)%XUSTAR2
           TWS      => WADATS(IMOD)%XTWS
           CGE      => WADATS(IMOD)%XCGE
           PHIAW    => WADATS(IMOD)%XPHIAW

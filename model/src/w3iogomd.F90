@@ -1209,7 +1209,7 @@
                           SYY, SXY, PHS, PTP, PLP, PDIR, PSI, PWS,    &
                           PWST, PNR, USERO, TUSX, TUSY, PRMS, TPMS,   &
                           USSX, USSY, MSSX, MSSY, MSSD, MSCX, MSCY,   &
-                          MSCD, CHARN,                                &
+                          MSCD, CHARN, Z0, USTAR2,                    &
                           BHD, CGE, P2SMS, US3D, EF, TH1M, STH1M,     &
                           TH2M, STH2M, HSIG, STMAXE, STMAXD,          &
                           HCMAXE, HMAXE, HCMAXD, HMAXD, USSP, QP, PQP,&
@@ -2596,7 +2596,7 @@
                           CFLXYMAX, CFLTHMAX, CFLKMAX, P2SMS, US3D,    &
                           TH1M, STH1M, TH2M, STH2M, HSIG, PHICE, TAUICE,&
                           STMAXE, STMAXD, HMAXE, HCMAXE, HMAXD, HCMAXD,&
-                          USSP, TAUOCX, TAUOCY
+                          USSP, TAUOCX, TAUOCY, Z0, USTAR2 
 !/
       USE W3ODATMD, ONLY: NOGRP, NGRPP, IDOUT, UNDEF, NDST, NDSE,     &
                           FLOGRD, IPASS => IPASS1, WRITE => WRITE1,   &
@@ -2915,6 +2915,8 @@
                 IF ( FLOGRD( 5, 8) ) WHITECAP(ISEA,2) = UNDEF
                 IF ( FLOGRD( 5, 9) ) WHITECAP(ISEA,3) = UNDEF
                 IF ( FLOGRD( 5,10) ) WHITECAP(ISEA,4) = UNDEF
+                IF ( FLOGRD( 5,12) ) Z0(ISEA) = UNDEF
+                IF ( FLOGRD( 5,13) ) USTAR2(ISEA) = UNDEF
 !
                 IF ( FLOGRD( 6, 1) ) THEN
                                      SXX   (ISEA) = UNDEF
@@ -3232,6 +3234,10 @@
                     WRITE ( NDSOG ) WHITECAP(1:NSEA,4)
                   ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 11 ) THEN
                     WRITE ( NDSOG ) TWS(1:NSEA)
+                  ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 12 ) THEN
+                    WRITE ( NDSOG ) Z0(1:NSEA)
+                  ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 13 ) THEN
+                    WRITE ( NDSOG ) USTAR2(1:NSEA)
 !
 !     Section 6)
 !
@@ -3553,6 +3559,12 @@
                   ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 11 ) THEN
                     READ (NDSOG,END=801,ERR=802,IOSTAT=IERR)         &
                                                    TWS(1:NSEA)
+                  ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 12 ) THEN
+                    READ (NDSOG,END=801,ERR=802,IOSTAT=IERR)         &
+                                                   Z0(1:NSEA)
+                  ELSE IF ( IFI .EQ. 5 .AND. IFJ .EQ. 13 ) THEN
+                    READ (NDSOG,END=801,ERR=802,IOSTAT=IERR)         &
+                                                   USTAR2(1:NSEA)
 !
 !     Section 6)
 !
