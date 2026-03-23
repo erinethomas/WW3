@@ -787,7 +787,7 @@
                FLCK, FLSOU, FLBPI, FLBPO, CLATS, CLATIS, CTHG0S,      &
                STEXU, STEYU, STEDU, IICEHMIN, IICEHINIT, IICEDISP,    &
                ICESCALES(1:4), CALTYPE, CMPRTRCK, IICEHFAC, IICEHDISP,&
-               IICEDDISP, IICEFDISP, BTBETA,                          &
+               IICEDDISP, IICEFDISP, BTBETA, IC_NUMERICS,             &
                AAIRCMIN, AAIRGB
 
           WRITE(NDSM)GRIDSHIFT
@@ -980,7 +980,7 @@
                FLCTH, FLCK, FLSOU, FLBPI, FLBPO, CLATS, CLATIS,       &
                CTHG0S, STEXU, STEYU, STEDU, IICEHMIN, IICEHINIT,      &
                IICEDISP, ICESCALES(1:4), CALTYPE, CMPRTRCK, IICEHFAC, &
-               IICEDDISP, IICEHDISP, IICEFDISP, BTBETA,               &
+               IICEDDISP, IICEHDISP, IICEFDISP, BTBETA, IC_NUMERICS,  &
                AAIRCMIN, AAIRGB
 #ifdef W3_DEBUGIOGR
      WRITE(740+IAPROC,*) 'W3IOGR, step 7.14'
