@@ -39,6 +39,9 @@
       USE W3GDATMD, ONLY: GRID, SGRD, GRIDS, SGRDS
       USE W3ODATMD, ONLY: NDSO, NDSE, IAPROC, NAPOUT
       USE W3SERVMD, ONLY: EXTCDE
+#ifdef W3_MPI
+      USE W3ADATMD, ONLY: MPI_COMM_WAVE
+#endif
 #ifdef W3_S
       USE W3SERVMD, ONLY: STRACE
 #endif
@@ -430,6 +433,10 @@
       LOGICAL :: HEADER, FILESTART, READINGCELLSIZE, READINGALPHA
       INTEGER :: IX, IY, SPGRDS_SIZE, IK
       REAL, ALLOCATABLE :: TRANS(:)
+#ifdef W3_MPI
+      INCLUDE "mpif.h"
+      INTEGER :: IERR_MPI
+#endif
 #ifdef W3_S
       INTEGER, SAVE           :: IENT   = 0
 #endif
@@ -437,7 +444,17 @@
 #ifdef W3_S
       CALL STRACE (IENT, 'LOAD_ALPHABETA_FROMFILE') 
 #endif
-    
+
+      ! ------------------------------------------------------------------
+      !  parse the ASCII obstruction file.
+      !  With MPI: only NAPOUT reads the file; result is broadcast to all
+      !  other ranks to avoid saturating the filesystem with N simultaneous
+      !  text-format reads.
+      ! ------------------------------------------------------------------
+#ifdef W3_MPI
+      IF (IAPROC .EQ. NAPOUT) THEN
+#endif
+
       !  INITIALIZING LOGICALS REPRESENTING THE DIFFERENT PHASES OF THE LOAD
       FILESTART = .TRUE.
       HEADER = .TRUE.;
@@ -502,6 +519,15 @@
       CLOSE(FILEUNIT)
   
       DEALLOCATE(TRANS)
+
+#ifdef W3_MPI
+      ENDIF  ! IAPROC .EQ. NAPOUT
+      !  Distribute the arrays read by NAPOUT to every other rank.
+      CALL MPI_BCAST(ALPHAMTX,     NX*NY*NK*NTH, MPI_BYTE,    NAPOUT-1, MPI_COMM_WAVE, IERR_MPI)
+      CALL MPI_BCAST(BETAMTX,      NX*NY*NK*NTH, MPI_BYTE,    NAPOUT-1, MPI_COMM_WAVE, IERR_MPI)
+      CALL MPI_BCAST(CELLSIZE,     NX*NY*NTH,    MPI_REAL,    NAPOUT-1, MPI_COMM_WAVE, IERR_MPI)
+      CALL MPI_BCAST(ISOBSTRUCTED, NX*NY,        MPI_LOGICAL, NAPOUT-1, MPI_COMM_WAVE, IERR_MPI)
+#endif
     
       END SUBROUTINE LOAD_ALPHABETA_FROMFILE
   
