@@ -3842,7 +3842,7 @@
          !   'days since 1990-01-01 00:00:00')
          CALL CHECK_ERR(IRET)
 
-         IRET = NF90_PUT_ATT(NCID, VARID(12), 'calendar', 'gregorian')
+         IRET = NF90_PUT_ATT(NCID, VARID(12), 'calendar', TRIM(CALTYPE))
          CALL CHECK_ERR(IRET)
 
          ! Add these to auxiliary coordinates list:
